@@ -25,14 +25,19 @@ function getApiKey() {
 
 function rotateKey() {
   currentKeyIndex = (currentKeyIndex + 1) % API_KEYS.length;
-  console.log("🔄 Trocando para API KEY:", currentKeyIndex + 1);
+  console.log(`🔄 Trocando para API KEY ${currentKeyIndex + 1}`);
 }
 
+/* =========================================================
+   YOUTUBE FETCH COM DIAGNÓSTICO
+========================================================= */
 async function youtubeFetch(urlWithoutKey) {
   let attempts = 0;
+  let lastError = "Erro desconhecido";
 
   while (attempts < API_KEYS.length) {
     const key = getApiKey();
+    const keyNumber = currentKeyIndex + 1;
     const url = `${urlWithoutKey}&key=${key}`;
 
     try {
@@ -40,31 +45,29 @@ async function youtubeFetch(urlWithoutKey) {
       const data = await response.json();
 
       if (data.error) {
-        const reason = data.error?.errors?.[0]?.reason || data.error?.message || "unknownError";
-        console.log("❌ Erro YouTube API:", reason);
+        const reason = data.error?.errors?.[0]?.reason || "unknownError";
+        const message = data.error?.message || "Sem mensagem";
+        lastError = `${reason} - ${message}`;
 
-        if (
-          reason === "quotaExceeded" ||
-          reason === "dailyLimitExceeded" ||
-          reason === "rateLimitExceeded"
-        ) {
-          rotateKey();
-          attempts++;
-          continue;
-        }
+        console.log(`❌ KEY ${keyNumber} falhou: ${lastError}`);
 
-        throw new Error(reason);
+        rotateKey();
+        attempts++;
+        continue;
       }
 
+      console.log(`✅ KEY ${keyNumber} funcionou`);
       return data;
     } catch (error) {
-      console.log("⚠️ Falha na requisição:", error.message);
+      lastError = error.message || "Falha de rede";
+      console.log(`⚠️ KEY ${keyNumber} erro de rede: ${lastError}`);
+
       rotateKey();
       attempts++;
     }
   }
 
-  throw new Error("Todas as API keys falharam.");
+  throw new Error(`Todas as API keys falharam. Último erro: ${lastError}`);
 }
 
 /* =========================================================
@@ -87,6 +90,7 @@ function parseVideoId(input = "") {
       if (v) return v;
 
       const parts = url.pathname.split("/").filter(Boolean);
+
       const shortsIndex = parts.indexOf("shorts");
       if (shortsIndex !== -1 && parts[shortsIndex + 1]) {
         return parts[shortsIndex + 1];
@@ -126,7 +130,6 @@ function parseChannelInput(input = "") {
 
   try {
     const url = new URL(value);
-
     const parts = url.pathname.split("/").filter(Boolean);
 
     if (parts[0] === "channel" && parts[1]) {
@@ -157,7 +160,7 @@ function calcVideoScore(v) {
   const comments = Number(v.comments || 0);
   const subscribers = Number(v.subscribers || 0);
 
-  const eng = views > 0 ? ((likes + comments * 2) / views) * 100 : 0;
+  const eng = views > 0 ? ((likes / views) * 100) : 0;
   const perf = subscribers > 0 ? views / subscribers : views / 1000;
 
   const ageDays = v.publishedAt
@@ -182,31 +185,31 @@ function buildVideoAnalysis(data) {
   const strongPoints = [];
   const weakPoints = [];
 
-  if (views > 10000) strongPoints.push("Bom volume de visualizações para chamar atenção no nicho.");
+  if (views > 10000) strongPoints.push("Bom volume de visualizações para chamar atenção.");
   if (Number(engagement) >= 3) strongPoints.push("Taxa de likes acima da média.");
-  if (Number(commentRate) >= 0.2) strongPoints.push("Boa chance de gerar discussão e retenção.");
-  if (subscribers > 0 && views > subscribers) strongPoints.push("Vídeo performando acima da base de inscritos.");
+  if (Number(commentRate) >= 0.2) strongPoints.push("Boa interação nos comentários.");
+  if (subscribers > 0 && views > subscribers) strongPoints.push("Vídeo acima da base de inscritos.");
 
-  if (views < 1000) weakPoints.push("Baixo alcance inicial.");
-  if (Number(engagement) < 1.5) weakPoints.push("Engajamento pode melhorar com thumbnail e gancho mais forte.");
+  if (views < 1000) weakPoints.push("Alcance inicial ainda baixo.");
+  if (Number(engagement) < 1.5) weakPoints.push("Engajamento pode melhorar com título e thumbnail mais fortes.");
   if (comments < 10) weakPoints.push("Pouca conversa nos comentários.");
   if (subscribers > 0 && views < subscribers * 0.1) weakPoints.push("Desempenho abaixo do potencial do canal.");
 
-  if (!strongPoints.length) strongPoints.push("Tema com potencial para ser refinado e reposicionado.");
-  if (!weakPoints.length) weakPoints.push("Pode testar título, thumbnail e CTA para aumentar CTR.");
+  if (!strongPoints.length) strongPoints.push("Tema com potencial para ser melhor posicionado.");
+  if (!weakPoints.length) weakPoints.push("Pode testar nova thumbnail e gancho inicial.");
 
   return {
     score,
-    scoreExplicacao: `O score considera views, engajamento, relação entre visualizações e inscritos, e frescor do conteúdo.`,
+    scoreExplicacao: "O score considera views, engajamento, relação entre visualizações e inscritos e frescor do conteúdo.",
     desempenho: `O vídeo tem ${views.toLocaleString("pt-BR")} views, ${likes.toLocaleString("pt-BR")} likes e ${comments.toLocaleString("pt-BR")} comentários. A taxa de engajamento por likes está em ${engagement}%.`,
-    monetizacao: `Se o conteúdo mantiver boa retenção, ele pode ser útil para monetização com anúncios, afiliados ou captação de audiência para outros vídeos relacionados.`,
+    monetizacao: "Se o conteúdo tiver boa retenção, pode ajudar em anúncios, afiliados e crescimento de audiência.",
     pontosFortres: strongPoints,
     pontosFragos: weakPoints,
     titulo: {
       otimizado: `${data.title} | Versão Melhorada para Mais Cliques`,
-      explicacao: "O título otimizado tenta deixar a proposta mais clara e aumentar curiosidade sem perder o contexto original."
+      explicacao: "O título foi ajustado para ficar mais claro e mais clicável."
     },
-    descricao: `Confira este conteúdo: ${data.title}\n\nNeste vídeo você encontra um tema com potencial para atrair audiência interessada. Se a thumbnail e o gancho estiverem alinhados, a chance de clique e retenção pode aumentar.\n\n#youtube #tubescanner #viral`,
+    descricao: `Confira este conteúdo: ${data.title}\n\nEste vídeo tem potencial para atrair audiência interessada no tema. Ajustes em thumbnail, título e gancho podem melhorar ainda mais o desempenho.\n\n#youtube #tubescanner #viral`,
     tags: [
       "youtube growth",
       "youtube seo",
@@ -216,13 +219,13 @@ function buildVideoAnalysis(data) {
       "thumbnail tips",
       "video strategy"
     ],
-    gancho: "Nos primeiros 30 segundos, deixe claro o benefício principal do vídeo, entregue uma promessa objetiva e mostre por que vale a pena continuar assistindo.",
-    thumbnail: "Use pouco texto, contraste alto, foco visual claro e um elemento principal fácil de entender em menos de 1 segundo.",
-    melhorHorario: "Teste publicar entre 18h e 22h e compare os primeiros 60 minutos de desempenho.",
+    gancho: "Nos primeiros 30 segundos, entregue a promessa principal e explique por que vale a pena continuar assistindo.",
+    thumbnail: "Use pouco texto, contraste alto, foco visual claro e uma promessa simples de entender.",
+    melhorHorario: "Teste publicar entre 18h e 22h e compare os primeiros 60 minutos.",
     ideias: [
-      { titulo: "Versão 2 com abordagem mais direta", motivo: "Pode melhorar o CTR com promessa mais objetiva." },
-      { titulo: "Comparação ou reação sobre o mesmo tema", motivo: "Conteúdo comparativo costuma aumentar curiosidade." },
-      { titulo: "Top erros sobre esse assunto", motivo: "Formato com problema + solução tende a gerar clique." }
+      { titulo: "Versão 2 com promessa mais forte", motivo: "Pode aumentar CTR rapidamente." },
+      { titulo: "Comparação sobre o mesmo tema", motivo: "Conteúdo comparativo gera curiosidade." },
+      { titulo: "Top erros sobre esse assunto", motivo: "Formato problema + solução costuma performar bem." }
     ]
   };
 }
@@ -238,28 +241,28 @@ function buildChannelAnalysis(data) {
 
   return {
     saude,
-    resumo: `O canal tem ${subs.toLocaleString("pt-BR")} inscritos e ${videos.toLocaleString("pt-BR")} vídeos publicados. A análise considera tamanho, volume de conteúdo e potencial de crescimento.`,
-    monetizacao: "O canal pode monetizar melhor com consistência, séries de conteúdo, thumbnails mais fortes e foco claro no nicho.",
-    crescimento: "Para crescer, foque em temas repetíveis, títulos melhores e análise dos vídeos que performam acima da média.",
-    nicho: "O nicho deve ser trabalhado com consistência visual, promessa clara e vídeos que atendam a uma dor ou interesse específico.",
+    resumo: `O canal tem ${subs.toLocaleString("pt-BR")} inscritos e ${videos.toLocaleString("pt-BR")} vídeos publicados.`,
+    monetizacao: "O canal pode monetizar melhor com consistência, séries de conteúdo e thumbnails mais fortes.",
+    crescimento: "Para crescer, foque nos temas que performam acima da média e repita os padrões vencedores.",
+    nicho: "O nicho deve ser trabalhado com promessa clara, identidade visual forte e temas repetíveis.",
     pontosFortres: [
-      "Base inicial de conteúdo publicada.",
-      "Estrutura pronta para evoluir com estratégia.",
-      "Canal pode se beneficiar muito de SEO e consistência."
+      "Base inicial de conteúdo já publicada.",
+      "Estrutura pronta para crescer com estratégia.",
+      "Pode melhorar bastante com SEO e consistência."
     ],
     melhorias: [
       "Melhorar títulos e thumbnails.",
-      "Publicar com frequência previsível.",
-      "Criar séries de vídeos sobre subtemas vencedores."
+      "Publicar em frequência previsível.",
+      "Criar séries com o mesmo formato vencedor."
     ],
-    estrategia: "Escolha 1 nicho principal, repita o mesmo tipo de promessa vencedora nos próximos vídeos e acompanhe quais conteúdos puxam mais views por inscrito.",
+    estrategia: "Escolha 1 nicho principal, repita o mesmo tipo de promessa vencedora e acompanhe os vídeos que trazem mais views por inscrito.",
     ideias: [
-      { titulo: "3 temas que mais podem crescer no canal", motivo: "Ajuda a encontrar formatos repetíveis." },
-      { titulo: "Análise dos vídeos que mais performaram", motivo: "Permite duplicar padrões vencedores." },
-      { titulo: "Série de vídeos com mesmo formato visual", motivo: "Aumenta reconhecimento do público." }
+      { titulo: "3 temas com mais potencial de crescimento", motivo: "Ajuda a escolher formatos repetíveis." },
+      { titulo: "Análise dos vídeos que mais performaram", motivo: "Permite copiar padrões vencedores." },
+      { titulo: "Série com o mesmo estilo visual", motivo: "Aumenta reconhecimento do público." }
     ],
-    frequencia: "O ideal é publicar pelo menos 2 a 3 vezes por semana para gerar histórico e aprendizado mais rápido.",
-    melhorHorario: "Teste horários fixos entre 18h e 22h para criar hábito de audiência."
+    frequencia: "O ideal é publicar 2 a 3 vezes por semana para acelerar o aprendizado do canal.",
+    melhorHorario: "Teste horários entre 18h e 22h para criar padrão de audiência."
   };
 }
 
@@ -312,7 +315,7 @@ app.get("/api/search", async (req, res) => {
 
     const channelsData = channelIds
       ? await youtubeFetch(
-          `https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet&id=${channelIds}`
+          `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${channelIds}`
         )
       : { items: [] };
 
