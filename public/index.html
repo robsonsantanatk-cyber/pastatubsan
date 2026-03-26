@@ -14,8 +14,8 @@
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #0a0f1c, #0f172a);
-      color: #fff;
+      background: linear-gradient(135deg, #e0f2fe, #f0f9ff);
+      color: #0f172a;
     }
 
     .container {
@@ -26,21 +26,25 @@
 
     .topbar {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
     }
 
     .logo {
-      font-size: 24px;
+      font-size: 28px;
       font-weight: 700;
-      color: #4da3ff;
+      color: #0284c7;
     }
 
     .search-box {
       display: flex;
       gap: 10px;
-      margin-bottom: 25px;
+      margin-bottom: 30px;
+      background: #ffffff;
+      padding: 10px;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
     }
 
     .search-box input {
@@ -48,8 +52,7 @@
       padding: 15px;
       border-radius: 10px;
       border: none;
-      background: #1e293b;
-      color: #fff;
+      background: transparent;
       outline: none;
       font-size: 16px;
     }
@@ -58,15 +61,16 @@
       padding: 15px 25px;
       border-radius: 10px;
       border: none;
-      background: #3b82f6;
+      background: #0ea5e9;
       color: white;
       cursor: pointer;
       font-weight: 600;
       font-size: 16px;
+      transition: 0.3s;
     }
 
     .search-box button:hover {
-      background: #2563eb;
+      background: #0284c7;
     }
 
     .results {
@@ -76,31 +80,32 @@
     .card {
       display: flex;
       gap: 15px;
-      background: #1e293b;
+      background: #ffffff;
       padding: 15px;
-      border-radius: 12px;
+      border-radius: 15px;
       margin-bottom: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
       transition: 0.3s;
     }
 
     .card:hover {
-      transform: scale(1.02);
-      background: #334155;
+      transform: translateY(-3px);
     }
 
     .card img {
-      width: 150px;
+      width: 180px;
       border-radius: 10px;
     }
 
     .card h3 {
-      margin: 0;
-      font-size: 16px;
+      margin: 0 0 10px;
+      font-size: 17px;
     }
 
     .card a {
-      color: #4da3ff;
+      color: #0ea5e9;
       text-decoration: none;
+      font-weight: 600;
     }
 
     .card a:hover {
@@ -111,6 +116,13 @@
       text-align: center;
       margin-top: 50px;
       opacity: 0.6;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 13px;
+      opacity: 0.5;
     }
   </style>
 </head>
@@ -124,11 +136,15 @@
     </div>
 
     <div class="search-box">
-      <input type="text" id="searchInput" placeholder="Digite algo... ex: lo-fi, música, viral">
+      <input type="text" id="searchInput" placeholder="Buscar vídeos... ex: música relaxante, viral, lo-fi">
       <button onclick="buscar()">Buscar</button>
     </div>
 
     <div id="results" class="results"></div>
+
+    <div class="footer">
+      Powered by TubeScan PRO
+    </div>
 
   </div>
 
