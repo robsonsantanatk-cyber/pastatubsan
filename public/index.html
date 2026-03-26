@@ -1,471 +1,167 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8">
-  <title>TubeScan PRO</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * {
+    box-sizing: border-box;
+  }
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background:
+      radial-gradient(circle at top left, rgba(14, 165, 233, 0.10), transparent 25%),
+      radial-gradient(circle at top right, rgba(59, 130, 246, 0.08), transparent 22%),
+      linear-gradient(135deg, #0f172a, #111827 55%, #0b1120);
+    color: #e5e7eb;
+    min-height: 100vh;
+  }
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+  .container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 28px 20px 40px;
+  }
 
-    :root {
-      --bg: #050816;
-      --bg-soft: rgba(255,255,255,0.04);
-      --card: rgba(255,255,255,0.06);
-      --stroke: rgba(255,255,255,0.10);
-      --text: #f8fafc;
-      --muted: #94a3b8;
-      --primary: #ff2fb3;
-      --primary-2: #7c3aed;
-      --blue: #38bdf8;
-      --shadow: 0 20px 80px rgba(0, 0, 0, 0.45);
-    }
+  .topbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 36px;
+  }
 
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(124, 58, 237, 0.30), transparent 30%),
-        radial-gradient(circle at top right, rgba(255, 47, 179, 0.20), transparent 25%),
-        radial-gradient(circle at bottom center, rgba(56, 189, 248, 0.15), transparent 30%),
-        linear-gradient(135deg, #030712, #060b1d 50%, #020617);
-      min-height: 100vh;
-    }
+  .logo {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #f8fafc;
+  }
 
-    .container {
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 28px 20px 60px;
-    }
+  .search-box {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 30px;
+    padding: 12px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(14px);
+  }
 
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 48px;
-    }
+  .search-box input {
+    flex: 1;
+    padding: 16px 18px;
+    border-radius: 14px;
+    border: 1px solid transparent;
+    background: rgba(255, 255, 255, 0.04);
+    outline: none;
+    font-size: 16px;
+    color: #f8fafc;
+    transition: all 0.25s ease;
+  }
 
-    .logo {
-      font-size: 28px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-    }
+  .search-box input::placeholder {
+    color: #94a3b8;
+  }
 
-    .logo span {
-      background: linear-gradient(90deg, #ffffff, #ff2fb3);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+  .search-box input:focus {
+    border-color: rgba(56, 189, 248, 0.45);
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.10);
+  }
 
-    .nav {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+  .search-box button {
+    padding: 16px 24px;
+    border-radius: 14px;
+    border: none;
+    background: linear-gradient(135deg, #0ea5e9, #2563eb);
+    color: white;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 15px;
+    transition: transform 0.2s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+    box-shadow: 0 12px 28px rgba(37, 99, 235, 0.30);
+  }
 
-    .nav a {
-      text-decoration: none;
-      color: var(--muted);
-      padding: 10px 14px;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.06);
-      transition: 0.25s ease;
-      font-size: 14px;
-    }
+  .search-box button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 16px 34px rgba(37, 99, 235, 0.38);
+    opacity: 0.98;
+  }
 
-    .nav a:hover {
-      color: white;
-      background: rgba(255,255,255,0.08);
-    }
+  .results {
+    margin-top: 20px;
+  }
 
-    .hero {
-      text-align: center;
-      margin-bottom: 34px;
-    }
+  .card {
+    display: flex;
+    gap: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 16px;
+    border-radius: 18px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.20);
+    backdrop-filter: blur(10px);
+    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  }
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 16px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      color: #dbeafe;
-      font-size: 13px;
-      margin-bottom: 20px;
-      backdrop-filter: blur(10px);
-    }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
 
-    .hero h1 {
-      margin: 0;
-      font-size: clamp(34px, 6vw, 64px);
-      line-height: 1.05;
-      letter-spacing: -2px;
-      font-weight: 800;
-    }
+  .card img {
+    width: 180px;
+    border-radius: 12px;
+    object-fit: cover;
+  }
 
-    .hero h1 .gradient {
-      background: linear-gradient(90deg, #38bdf8, #a855f7, #ff2fb3);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+  .card h3 {
+    margin: 0 0 10px;
+    font-size: 17px;
+    line-height: 1.4;
+    color: #f8fafc;
+  }
 
-    .hero p {
-      max-width: 760px;
-      margin: 18px auto 0;
-      font-size: 18px;
-      line-height: 1.7;
-      color: var(--muted);
-    }
+  .card a {
+    color: #38bdf8;
+    text-decoration: none;
+    font-weight: 700;
+  }
 
-    .search-panel {
-      margin: 38px auto 20px;
-      padding: 18px;
-      border-radius: 24px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      backdrop-filter: blur(18px);
-      box-shadow: var(--shadow);
-    }
+  .card a:hover {
+    text-decoration: underline;
+  }
 
+  .empty {
+    text-align: center;
+    margin-top: 50px;
+    opacity: 0.75;
+    color: #94a3b8;
+  }
+
+  .footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 13px;
+    color: #64748b;
+  }
+
+  @media (max-width: 768px) {
     .search-box {
-      display: flex;
-      gap: 14px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .search-box input {
-      flex: 1;
-      min-width: 260px;
-      height: 62px;
-      padding: 0 20px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.04);
-      color: white;
-      outline: none;
-      font-size: 16px;
-      transition: 0.25s ease;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
-    }
-
-    .search-box input::placeholder {
-      color: #64748b;
-    }
-
-    .search-box input:focus {
-      border-color: rgba(255, 47, 179, 0.45);
-      box-shadow: 0 0 0 4px rgba(255, 47, 179, 0.10);
-      background: rgba(255,255,255,0.06);
+      flex-direction: column;
     }
 
     .search-box button {
-      height: 62px;
-      padding: 0 28px;
-      border: none;
-      border-radius: 18px;
-      background: linear-gradient(90deg, #ff2fb3, #a855f7);
-      color: white;
-      font-weight: 700;
-      font-size: 16px;
-      cursor: pointer;
-      transition: transform 0.18s ease, box-shadow 0.25s ease, opacity 0.25s ease;
-      box-shadow: 0 16px 35px rgba(168, 85, 247, 0.35);
-    }
-
-    .search-box button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 22px 45px rgba(255, 47, 179, 0.28);
-      opacity: 0.96;
-    }
-
-    .search-box button:active {
-      transform: translateY(0);
-    }
-
-    .helper {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 14px;
-    }
-
-    .helper span {
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.05);
-      color: #cbd5e1;
-      font-size: 13px;
-    }
-
-    .status {
-      margin-top: 20px;
-      color: #cbd5e1;
-      font-size: 14px;
-      min-height: 22px;
-    }
-
-    .results {
-      margin-top: 26px;
-      display: grid;
-      gap: 16px;
-    }
-
-    .card {
-      display: flex;
-      gap: 18px;
-      align-items: stretch;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      padding: 14px;
-      border-radius: 22px;
-      backdrop-filter: blur(14px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.22);
-      transition: 0.25s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(255,255,255,0.14);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.30);
-    }
-
-    .thumb {
-      width: 240px;
-      min-width: 240px;
-      height: 135px;
-      object-fit: cover;
-      border-radius: 16px;
-      display: block;
-    }
-
-    .card-content {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 12px;
       width: 100%;
     }
 
-    .card-top h3 {
-      margin: 0 0 10px;
-      font-size: 20px;
-      line-height: 1.35;
-      color: white;
+    .card {
+      flex-direction: column;
     }
 
-    .card-top p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.6;
-      font-size: 14px;
+    .card img {
+      width: 100%;
     }
-
-    .card-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .watch-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
-      padding: 12px 16px;
-      border-radius: 14px;
-      background: linear-gradient(90deg, #0ea5e9, #2563eb);
-      color: white;
-      font-weight: 700;
-      transition: 0.2s ease;
-      box-shadow: 0 10px 22px rgba(37, 99, 235, 0.28);
-    }
-
-    .watch-btn:hover {
-      transform: translateY(-2px);
-    }
-
-    .tag {
-      padding: 10px 12px;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.06);
-      color: #cbd5e1;
-      font-size: 13px;
-    }
-
-    .empty {
-      text-align: center;
-      padding: 40px 20px;
-      color: var(--muted);
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 20px;
-    }
-
-    .footer {
-      text-align: center;
-      margin-top: 44px;
-      font-size: 13px;
-      color: #64748b;
-    }
-
-    @media (max-width: 860px) {
-      .topbar {
-        flex-direction: column;
-        gap: 16px;
-      }
-
-      .card {
-        flex-direction: column;
-      }
-
-      .thumb {
-        width: 100%;
-        min-width: 100%;
-        height: auto;
-      }
-
-      .search-box {
-        flex-direction: column;
-      }
-
-      .search-box button,
-      .search-box input {
-        width: 100%;
-      }
-    }
-  </style>
-</head>
-<body>
-
-  <div class="container">
-    <div class="topbar">
-      <div class="logo">TubeScan <span>PRO</span></div>
-
-      <div class="nav">
-        <a href="#">Analisar</a>
-        <a href="#">Tendências</a>
-        <a href="#">Favoritos</a>
-      </div>
-    </div>
-
-    <section class="hero">
-      <div class="badge">🔥 Encontre vídeos com potencial antes da concorrência</div>
-      <h1>Descubra conteúdos que podem <span class="gradient">explodir no YouTube</span></h1>
-      <p>
-        Pesquise vídeos com aparência de ferramenta premium, velocidade e foco em oportunidade.
-        Busque nichos, analise tendências e encontre ideias que chamam atenção em segundos.
-      </p>
-    </section>
-
-    <div class="search-panel">
-      <div class="search-box">
-        <input
-          type="text"
-          id="searchInput"
-          placeholder="Busque por nichos, formatos ou ideias... ex: lo-fi, renda extra, música relaxante"
-        >
-        <button onclick="buscar()">Buscar agora</button>
-      </div>
-
-      <div class="helper">
-        <span>🎯 Tendências</span>
-        <span>⚡ Nichos virais</span>
-        <span>📈 Oportunidades</span>
-        <span>🚀 Crescimento</span>
-      </div>
-
-      <div id="status" class="status"></div>
-    </div>
-
-    <div id="results" class="results"></div>
-
-    <div class="footer">
-      © 2025 TubeScan PRO — inteligência visual para descobrir vídeos
-    </div>
-  </div>
-
-  <script>
-    async function buscar() {
-      const query = document.getElementById("searchInput").value.trim();
-      const resultsDiv = document.getElementById("results");
-      const statusDiv = document.getElementById("status");
-
-      if (!query) {
-        statusDiv.innerHTML = "Digite um termo para começar.";
-        return;
-      }
-
-      resultsDiv.innerHTML = "";
-      statusDiv.innerHTML = "🔎 Buscando oportunidades...";
-
-      try {
-        const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
-        const data = await res.json();
-
-        if (!data || data.length === 0) {
-          statusDiv.innerHTML = "Nenhum resultado encontrado.";
-          resultsDiv.innerHTML = "<div class='empty'>Não encontramos vídeos para essa busca.</div>";
-          return;
-        }
-
-        statusDiv.innerHTML = `✨ ${data.length} resultado(s) encontrado(s)`;
-
-        resultsDiv.innerHTML = "";
-
-        data.forEach(video => {
-          const title = video?.snippet?.title || "Vídeo sem título";
-          const thumb = video?.snippet?.thumbnails?.medium?.url || "";
-          const videoId = video?.id?.videoId || "";
-          const channel = video?.snippet?.channelTitle || "Canal não informado";
-          const description = video?.snippet?.description
-            ? video.snippet.description.slice(0, 140) + "..."
-            : "Sem descrição disponível.";
-
-          const card = `
-            <div class="card">
-              <img class="thumb" src="${thumb}" alt="${title}">
-              <div class="card-content">
-                <div class="card-top">
-                  <h3>${title}</h3>
-                  <p>${description}</p>
-                </div>
-
-                <div class="card-actions">
-                  <a class="watch-btn" href="https://www.youtube.com/watch?v=${videoId}" target="_blank">
-                    ▶ Assistir vídeo
-                  </a>
-                  <div class="tag">Canal: ${channel}</div>
-                </div>
-              </div>
-            </div>
-          `;
-
-          resultsDiv.innerHTML += card;
-        });
-
-      } catch (error) {
-        statusDiv.innerHTML = "Erro ao buscar.";
-        resultsDiv.innerHTML = "<div class='empty'>Algo deu errado ao buscar os vídeos.</div>";
-      }
-    }
-
-    document.getElementById("searchInput").addEventListener("keydown", function(event) {
-      if (event.key === "Enter") {
-        buscar();
-      }
-    });
-  </script>
-</body>
-</html>
+  }
+</style>
