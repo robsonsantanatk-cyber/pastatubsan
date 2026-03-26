@@ -1,167 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>TubeScan PRO</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
 <style>
-  * {
-    box-sizing: border-box;
-  }
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #e0f2fe, #f8fafc);
+  color: #0f172a;
+}
 
-  body {
-    margin: 0;
-    font-family: 'Inter', sans-serif;
-    background:
-      radial-gradient(circle at top left, rgba(14, 165, 233, 0.10), transparent 25%),
-      radial-gradient(circle at top right, rgba(59, 130, 246, 0.08), transparent 22%),
-      linear-gradient(135deg, #0f172a, #111827 55%, #0b1120);
-    color: #e5e7eb;
-    min-height: 100vh;
-  }
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px;
+}
 
-  .container {
-    max-width: 1100px;
-    margin: auto;
-    padding: 28px 20px 40px;
-  }
+.logo {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #0284c7;
+  margin-bottom: 30px;
+}
 
-  .topbar {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 36px;
-  }
+.search-box {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+  background: #fff;
+  padding: 10px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
 
-  .logo {
-    font-size: 30px;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-    color: #f8fafc;
-  }
+.search-box input {
+  flex: 1;
+  padding: 15px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
 
-  .search-box {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 30px;
-    padding: 12px;
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
-    backdrop-filter: blur(14px);
-  }
+.search-box button {
+  padding: 15px 25px;
+  border-radius: 10px;
+  border: none;
+  background: #0ea5e9;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+}
 
-  .search-box input {
-    flex: 1;
-    padding: 16px 18px;
-    border-radius: 14px;
-    border: 1px solid transparent;
-    background: rgba(255, 255, 255, 0.04);
-    outline: none;
-    font-size: 16px;
-    color: #f8fafc;
-    transition: all 0.25s ease;
-  }
+.search-box button:hover {
+  background: #0284c7;
+}
 
-  .search-box input::placeholder {
-    color: #94a3b8;
-  }
+.card {
+  display: flex;
+  gap: 15px;
+  background: #fff;
+  padding: 15px;
+  border-radius: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
 
-  .search-box input:focus {
-    border-color: rgba(56, 189, 248, 0.45);
-    background: rgba(255, 255, 255, 0.06);
-    box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.10);
-  }
+.card img {
+  width: 180px;
+  border-radius: 10px;
+}
 
-  .search-box button {
-    padding: 16px 24px;
-    border-radius: 14px;
-    border: none;
-    background: linear-gradient(135deg, #0ea5e9, #2563eb);
-    color: white;
-    cursor: pointer;
-    font-weight: 700;
-    font-size: 15px;
-    transition: transform 0.2s ease, box-shadow 0.25s ease, opacity 0.25s ease;
-    box-shadow: 0 12px 28px rgba(37, 99, 235, 0.30);
-  }
+.card h3 {
+  margin: 0 0 10px;
+  font-size: 17px;
+}
 
-  .search-box button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 16px 34px rgba(37, 99, 235, 0.38);
-    opacity: 0.98;
-  }
-
-  .results {
-    margin-top: 20px;
-  }
-
-  .card {
-    display: flex;
-    gap: 16px;
-    background: rgba(255, 255, 255, 0.05);
-    padding: 16px;
-    border-radius: 18px;
-    margin-bottom: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.20);
-    backdrop-filter: blur(10px);
-    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
-  }
-
-  .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
-    border-color: rgba(255, 255, 255, 0.12);
-  }
-
-  .card img {
-    width: 180px;
-    border-radius: 12px;
-    object-fit: cover;
-  }
-
-  .card h3 {
-    margin: 0 0 10px;
-    font-size: 17px;
-    line-height: 1.4;
-    color: #f8fafc;
-  }
-
-  .card a {
-    color: #38bdf8;
-    text-decoration: none;
-    font-weight: 700;
-  }
-
-  .card a:hover {
-    text-decoration: underline;
-  }
-
-  .empty {
-    text-align: center;
-    margin-top: 50px;
-    opacity: 0.75;
-    color: #94a3b8;
-  }
-
-  .footer {
-    text-align: center;
-    margin-top: 40px;
-    font-size: 13px;
-    color: #64748b;
-  }
-
-  @media (max-width: 768px) {
-    .search-box {
-      flex-direction: column;
-    }
-
-    .search-box button {
-      width: 100%;
-    }
-
-    .card {
-      flex-direction: column;
-    }
-
-    .card img {
-      width: 100%;
-    }
-  }
+.card a {
+  color: #0ea5e9;
+  text-decoration: none;
+  font-weight: 600;
+}
 </style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="logo">🚀 TubeScan PRO</div>
+
+<div class="search-box">
+<input id="searchInput" placeholder="Buscar vídeos... ex: música, viral, lo-fi">
+<button onclick="buscar()">Buscar</button>
+</div>
+
+<div id="results"></div>
+
+</div>
+
+<script>
+async function buscar(){
+  const q = document.getElementById("searchInput").value;
+  if(!q){alert("Digite algo");return;}
+
+  const resDiv = document.getElementById("results");
+  resDiv.innerHTML = "🔎 Buscando...";
+
+  try{
+    const r = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
+    const data = await r.json();
+
+    resDiv.innerHTML = "";
+
+    data.forEach(v=>{
+      const card = `
+      <div class="card">
+        <img src="${v.snippet.thumbnails.medium.url}">
+        <div>
+          <h3>${v.snippet.title}</h3>
+          <a href="https://youtube.com/watch?v=${v.id.videoId}" target="_blank">▶ Assistir</a>
+        </div>
+      </div>`;
+      resDiv.innerHTML += card;
+    });
+
+  }catch{
+    resDiv.innerHTML = "Erro";
+  }
+}
+</script>
+
+</body>
+</html>
