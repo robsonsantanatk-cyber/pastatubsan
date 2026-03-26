@@ -3,187 +3,451 @@
 <head>
   <meta charset="UTF-8">
   <title>TubeScan PRO</title>
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- FONTE -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- ESTILO -->
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #050816;
+      --bg-soft: rgba(255,255,255,0.04);
+      --card: rgba(255,255,255,0.06);
+      --stroke: rgba(255,255,255,0.10);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --primary: #ff2fb3;
+      --primary-2: #7c3aed;
+      --blue: #38bdf8;
+      --shadow: 0 20px 80px rgba(0, 0, 0, 0.45);
+    }
+
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #e0f2fe, #f0f9ff);
-      color: #0f172a;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(124, 58, 237, 0.30), transparent 30%),
+        radial-gradient(circle at top right, rgba(255, 47, 179, 0.20), transparent 25%),
+        radial-gradient(circle at bottom center, rgba(56, 189, 248, 0.15), transparent 30%),
+        linear-gradient(135deg, #030712, #060b1d 50%, #020617);
+      min-height: 100vh;
     }
 
     .container {
-      max-width: 1100px;
-      margin: auto;
-      padding: 20px;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
     }
 
     .topbar {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      margin-bottom: 40px;
+      margin-bottom: 48px;
     }
 
     .logo {
       font-size: 28px;
-      font-weight: 700;
-      color: #0284c7;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .logo span {
+      background: linear-gradient(90deg, #ffffff, #ff2fb3);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: var(--muted);
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: 0.25s ease;
+      font-size: 14px;
+    }
+
+    .nav a:hover {
+      color: white;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 34px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #dbeafe;
+      font-size: 13px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(34px, 6vw, 64px);
+      line-height: 1.05;
+      letter-spacing: -2px;
+      font-weight: 800;
+    }
+
+    .hero h1 .gradient {
+      background: linear-gradient(90deg, #38bdf8, #a855f7, #ff2fb3);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      max-width: 760px;
+      margin: 18px auto 0;
+      font-size: 18px;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    .search-panel {
+      margin: 38px auto 20px;
+      padding: 18px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
     }
 
     .search-box {
       display: flex;
-      gap: 10px;
-      margin-bottom: 30px;
-      background: #ffffff;
-      padding: 10px;
-      border-radius: 15px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
     }
 
     .search-box input {
       flex: 1;
-      padding: 15px;
-      border-radius: 10px;
-      border: none;
-      background: transparent;
+      min-width: 260px;
+      height: 62px;
+      padding: 0 20px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: white;
       outline: none;
       font-size: 16px;
+      transition: 0.25s ease;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+    }
+
+    .search-box input::placeholder {
+      color: #64748b;
+    }
+
+    .search-box input:focus {
+      border-color: rgba(255, 47, 179, 0.45);
+      box-shadow: 0 0 0 4px rgba(255, 47, 179, 0.10);
+      background: rgba(255,255,255,0.06);
     }
 
     .search-box button {
-      padding: 15px 25px;
-      border-radius: 10px;
+      height: 62px;
+      padding: 0 28px;
       border: none;
-      background: #0ea5e9;
+      border-radius: 18px;
+      background: linear-gradient(90deg, #ff2fb3, #a855f7);
       color: white;
-      cursor: pointer;
-      font-weight: 600;
+      font-weight: 700;
       font-size: 16px;
-      transition: 0.3s;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+      box-shadow: 0 16px 35px rgba(168, 85, 247, 0.35);
     }
 
     .search-box button:hover {
-      background: #0284c7;
+      transform: translateY(-2px);
+      box-shadow: 0 22px 45px rgba(255, 47, 179, 0.28);
+      opacity: 0.96;
+    }
+
+    .search-box button:active {
+      transform: translateY(0);
+    }
+
+    .helper {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .helper span {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.05);
+      color: #cbd5e1;
+      font-size: 13px;
+    }
+
+    .status {
+      margin-top: 20px;
+      color: #cbd5e1;
+      font-size: 14px;
+      min-height: 22px;
     }
 
     .results {
-      margin-top: 20px;
+      margin-top: 26px;
+      display: grid;
+      gap: 16px;
     }
 
     .card {
       display: flex;
-      gap: 15px;
-      background: #ffffff;
-      padding: 15px;
-      border-radius: 15px;
-      margin-bottom: 15px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-      transition: 0.3s;
+      gap: 18px;
+      align-items: stretch;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 14px;
+      border-radius: 22px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.22);
+      transition: 0.25s ease;
     }
 
     .card:hover {
-      transform: translateY(-3px);
+      transform: translateY(-4px);
+      border-color: rgba(255,255,255,0.14);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.30);
     }
 
-    .card img {
-      width: 180px;
-      border-radius: 10px;
+    .thumb {
+      width: 240px;
+      min-width: 240px;
+      height: 135px;
+      object-fit: cover;
+      border-radius: 16px;
+      display: block;
     }
 
-    .card h3 {
+    .card-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .card-top h3 {
       margin: 0 0 10px;
-      font-size: 17px;
+      font-size: 20px;
+      line-height: 1.35;
+      color: white;
     }
 
-    .card a {
-      color: #0ea5e9;
+    .card-top p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .card-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .watch-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       text-decoration: none;
-      font-weight: 600;
+      padding: 12px 16px;
+      border-radius: 14px;
+      background: linear-gradient(90deg, #0ea5e9, #2563eb);
+      color: white;
+      font-weight: 700;
+      transition: 0.2s ease;
+      box-shadow: 0 10px 22px rgba(37, 99, 235, 0.28);
     }
 
-    .card a:hover {
-      text-decoration: underline;
+    .watch-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .tag {
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: #cbd5e1;
+      font-size: 13px;
     }
 
     .empty {
       text-align: center;
-      margin-top: 50px;
-      opacity: 0.6;
+      padding: 40px 20px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 20px;
     }
 
     .footer {
       text-align: center;
-      margin-top: 40px;
+      margin-top: 44px;
       font-size: 13px;
-      opacity: 0.5;
+      color: #64748b;
+    }
+
+    @media (max-width: 860px) {
+      .topbar {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .card {
+        flex-direction: column;
+      }
+
+      .thumb {
+        width: 100%;
+        min-width: 100%;
+        height: auto;
+      }
+
+      .search-box {
+        flex-direction: column;
+      }
+
+      .search-box button,
+      .search-box input {
+        width: 100%;
+      }
     }
   </style>
 </head>
-
 <body>
 
   <div class="container">
-
     <div class="topbar">
-      <div class="logo">🚀 TubeScan PRO</div>
+      <div class="logo">TubeScan <span>PRO</span></div>
+
+      <div class="nav">
+        <a href="#">Analisar</a>
+        <a href="#">Tendências</a>
+        <a href="#">Favoritos</a>
+      </div>
     </div>
 
-    <div class="search-box">
-      <input type="text" id="searchInput" placeholder="Buscar vídeos... ex: música relaxante, viral, lo-fi">
-      <button onclick="buscar()">Buscar</button>
+    <section class="hero">
+      <div class="badge">🔥 Encontre vídeos com potencial antes da concorrência</div>
+      <h1>Descubra conteúdos que podem <span class="gradient">explodir no YouTube</span></h1>
+      <p>
+        Pesquise vídeos com aparência de ferramenta premium, velocidade e foco em oportunidade.
+        Busque nichos, analise tendências e encontre ideias que chamam atenção em segundos.
+      </p>
+    </section>
+
+    <div class="search-panel">
+      <div class="search-box">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Busque por nichos, formatos ou ideias... ex: lo-fi, renda extra, música relaxante"
+        >
+        <button onclick="buscar()">Buscar agora</button>
+      </div>
+
+      <div class="helper">
+        <span>🎯 Tendências</span>
+        <span>⚡ Nichos virais</span>
+        <span>📈 Oportunidades</span>
+        <span>🚀 Crescimento</span>
+      </div>
+
+      <div id="status" class="status"></div>
     </div>
 
     <div id="results" class="results"></div>
 
     <div class="footer">
-      Powered by TubeScan PRO
+      © 2025 TubeScan PRO — inteligência visual para descobrir vídeos
     </div>
-
   </div>
 
   <script>
     async function buscar() {
-      const query = document.getElementById("searchInput").value;
+      const query = document.getElementById("searchInput").value.trim();
+      const resultsDiv = document.getElementById("results");
+      const statusDiv = document.getElementById("status");
 
       if (!query) {
-        alert("Digite algo para buscar!");
+        statusDiv.innerHTML = "Digite um termo para começar.";
         return;
       }
 
-      const resultsDiv = document.getElementById("results");
-      resultsDiv.innerHTML = "🔎 Buscando...";
+      resultsDiv.innerHTML = "";
+      statusDiv.innerHTML = "🔎 Buscando oportunidades...";
 
       try {
         const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
         const data = await res.json();
 
         if (!data || data.length === 0) {
-          resultsDiv.innerHTML = "<div class='empty'>Nenhum resultado encontrado</div>";
+          statusDiv.innerHTML = "Nenhum resultado encontrado.";
+          resultsDiv.innerHTML = "<div class='empty'>Não encontramos vídeos para essa busca.</div>";
           return;
         }
+
+        statusDiv.innerHTML = `✨ ${data.length} resultado(s) encontrado(s)`;
 
         resultsDiv.innerHTML = "";
 
         data.forEach(video => {
-          const title = video.snippet.title;
-          const thumb = video.snippet.thumbnails.medium.url;
-          const videoId = video.id.videoId;
+          const title = video?.snippet?.title || "Vídeo sem título";
+          const thumb = video?.snippet?.thumbnails?.medium?.url || "";
+          const videoId = video?.id?.videoId || "";
+          const channel = video?.snippet?.channelTitle || "Canal não informado";
+          const description = video?.snippet?.description
+            ? video.snippet.description.slice(0, 140) + "..."
+            : "Sem descrição disponível.";
 
           const card = `
             <div class="card">
-              <img src="${thumb}">
-              <div>
-                <h3>${title}</h3>
-                <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank">
-                  ▶ Assistir vídeo
-                </a>
+              <img class="thumb" src="${thumb}" alt="${title}">
+              <div class="card-content">
+                <div class="card-top">
+                  <h3>${title}</h3>
+                  <p>${description}</p>
+                </div>
+
+                <div class="card-actions">
+                  <a class="watch-btn" href="https://www.youtube.com/watch?v=${videoId}" target="_blank">
+                    ▶ Assistir vídeo
+                  </a>
+                  <div class="tag">Canal: ${channel}</div>
+                </div>
               </div>
             </div>
           `;
@@ -192,10 +456,16 @@
         });
 
       } catch (error) {
-        resultsDiv.innerHTML = "Erro ao buscar.";
+        statusDiv.innerHTML = "Erro ao buscar.";
+        resultsDiv.innerHTML = "<div class='empty'>Algo deu errado ao buscar os vídeos.</div>";
       }
     }
-  </script>
 
+    document.getElementById("searchInput").addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        buscar();
+      }
+    });
+  </script>
 </body>
 </html>
