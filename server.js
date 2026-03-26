@@ -3,7 +3,9 @@ const fetch = require("node-fetch");
 const path = require("path");
 
 const app = express();
-const PORT = 3000;
+
+// ✅ PORTA CORRETA PARA RENDER
+const PORT = process.env.PORT || 3000;
 
 // 🔑 SUAS API KEYS
 const API_KEYS = [
@@ -33,7 +35,7 @@ async function fetchYouTube(query) {
     const response = await fetch(url);
     const data = await response.json();
 
-    // 🔥 CAPTURA ERRO
+    // 🔥 CAPTURA ERRO DE API
     if (data.error) {
       const reason = data.error.errors[0].reason;
       console.log("❌ Erro:", reason);
@@ -43,7 +45,7 @@ async function fetchYouTube(query) {
         reason === "dailyLimitExceeded"
       ) {
         rotateKey();
-        return fetchYouTube(query); // tenta de novo
+        return fetchYouTube(query); // tenta novamente com outra key
       }
 
       throw new Error(reason);
@@ -72,6 +74,7 @@ app.get("/api/search", async (req, res) => {
 // 🌐 FRONTEND
 app.use(express.static(path.join(__dirname, "public")));
 
+// ✅ IMPORTANTE: usar PORT dinâmica
 app.listen(PORT, () => {
-  console.log(`🚀 Rodando em http://localhost:${PORT}`);
+  console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });
