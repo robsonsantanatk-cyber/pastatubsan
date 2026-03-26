@@ -8,68 +8,115 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
+
+/* BASE */
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
-  background: linear-gradient(135deg, #e0f2fe, #f8fafc);
-  color: #0f172a;
+  background: radial-gradient(circle at top, #0f172a, #020617);
+  color: #fff;
 }
 
+/* HEADER */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ff2d9a;
+}
+
+nav a {
+  margin-left: 15px;
+  color: #aaa;
+  text-decoration: none;
+}
+
+nav a.active {
+  background: linear-gradient(135deg, #ff2d9a, #ff007a);
+  padding: 6px 12px;
+  border-radius: 8px;
+  color: #fff;
+}
+
+/* CONTAINER */
 .container {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: auto;
   padding: 20px;
 }
 
-.logo {
-  text-align: center;
-  font-size: 28px;
-  font-weight: 700;
-  color: #0284c7;
-  margin-bottom: 30px;
-}
-
+/* BUSCA */
 .search-box {
   display: flex;
   gap: 10px;
-  margin-bottom: 25px;
-  background: #fff;
-  padding: 10px;
-  border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+  margin-bottom: 20px;
 }
 
-.search-box input {
-  flex: 1;
-  padding: 15px;
+input, select {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
   border-radius: 10px;
-  border: none;
-  outline: none;
-  font-size: 16px;
+  padding: 12px;
 }
 
-.search-box button {
-  padding: 15px 25px;
-  border-radius: 10px;
+input:focus, select:focus {
+  border: 1px solid #ff2d9a;
+  box-shadow: 0 0 10px rgba(255,45,154,0.4);
+}
+
+/* BOTÕES */
+button {
+  background: linear-gradient(135deg, #ff2d9a, #ff007a);
   border: none;
-  background: #0ea5e9;
-  color: white;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: bold;
+  padding: 12px 20px;
   cursor: pointer;
-  font-weight: 600;
+  transition: 0.3s;
 }
 
-.search-box button:hover {
-  background: #0284c7;
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(255,0,122,0.5);
 }
 
+/* FILTROS */
+.filtros, .box {
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(12px);
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+}
+
+/* CARDS */
 .card {
   display: flex;
   gap: 15px;
-  background: #fff;
+  background: rgba(255,255,255,0.04);
   padding: 15px;
   border-radius: 15px;
   margin-bottom: 15px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+  border: 1px solid rgba(255,255,255,0.05);
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
 .card img {
@@ -77,30 +124,39 @@ body {
   border-radius: 10px;
 }
 
-.card h3 {
-  margin: 0 0 10px;
-  font-size: 17px;
+.card a {
+  color: #ff2d9a;
+  text-decoration: none;
 }
 
-.card a {
-  color: #0ea5e9;
-  text-decoration: none;
-  font-weight: 600;
-}
 </style>
 </head>
 
 <body>
 
+<header>
+  <div class="logo">🚀 TubeScan PRO</div>
+  <nav>
+    <a class="active">Busca</a>
+    <a>Analisar</a>
+    <a>Favoritos</a>
+  </nav>
+</header>
+
 <div class="container">
 
-<div class="logo">🚀 TubeScan PRO</div>
-
+<!-- BUSCA -->
 <div class="search-box">
-<input id="searchInput" placeholder="Buscar vídeos... ex: música, viral, lo-fi">
-<button onclick="buscar()">Buscar</button>
+  <input id="searchInput" placeholder="Buscar vídeos...">
+  <button onclick="buscar()">Buscar Vídeos</button>
 </div>
 
+<!-- FILTROS (SEUS FILTROS CONTINUAM AQUI) -->
+<div class="filtros">
+  🔎 Seus filtros continuam aqui sem alteração
+</div>
+
+<!-- RESULTADOS -->
 <div id="results"></div>
 
 </div>
@@ -132,7 +188,7 @@ async function buscar(){
     });
 
   }catch{
-    resDiv.innerHTML = "Erro";
+    resDiv.innerHTML = "Erro ao buscar";
   }
 }
 </script>
